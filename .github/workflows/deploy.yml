@@ -46,7 +46,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-1
 
-    - name: Set selected color
+    - name: Set Terraform variable
       run: echo "TF_VAR_conoha_ip=${{ secrets.CONOHA_IP }}" >> $GITHUB_ENV
 
     - name: Setup Terraform
