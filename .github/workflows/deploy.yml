@@ -16,7 +16,7 @@ jobs:
       uses: shimataro/ssh-key-action@v2
       with:
         key: ${{ secrets.SSH_KEY }}
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+        known_hosts: ${{ secrets.CONOHA_IP }}
 
     - uses: eregon/use-ruby-action@v1
       with:
@@ -37,15 +37,7 @@ jobs:
     - name: Run Itamae
       run: |
         set -xe
-        bundle exec itamae ssh -u root -h {{ secrets.KNOWN_HOSTS }} recipe.rb
-
-  terraform:
-    name: terraform
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+        bundle exec itamae ssh -u root -h ${{ secrets.CONOHA_IP }} recipe.rb
 
     - name: configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -53,6 +45,9 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-1
+
+    - name: Set selected color
+      run: echo "TF_VAR_conoha_ip=${{ secrets.CONOHA_IP }}" >> $GITHUB_ENV
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
